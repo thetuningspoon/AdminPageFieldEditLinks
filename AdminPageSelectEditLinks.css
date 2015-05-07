@@ -1,0 +1,11 @@
+.ui-state-hover a, .ui-state-hover a:hover, .ui-state-hover a:link, .ui-state-hover a:visited {
+	text-decoration: underline;
+}
+
+.InputfieldPageEditButton {
+	margin-left: 1em;
+}
+
+.InputfieldPageListSelect .InputfieldPageEditButton {
+	margin-left: 0;
+}
