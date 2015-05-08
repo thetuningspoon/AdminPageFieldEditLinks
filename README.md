@@ -1,4 +1,4 @@
-# Page Select Edit Links for ProcessWire
+# Page Field Edit Links for ProcessWire
 Adds modal editing capability to ProcessWire's Page fields in the admin editor, allowing editors to easily view/edit the content of whichever page(s) have been selected. Edit links are updated in real time. Compatible with Select, AsmSelect, PageListSelect, PageListSelectMultiple, and PageAutoComplete inputfields.
 
 ## Instructions
