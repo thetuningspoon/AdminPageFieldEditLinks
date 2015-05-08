@@ -11,9 +11,9 @@
 		  var timeout = window.setInterval(function(){
 		
 		      if($(selector).html() == originalHtml) {
-		          console.log('no change');
+		          //console.log('no change');
 		      } else {
-		          console.log('changed!');
+		          //console.log('changed!');
 		          clearInterval(timeout);
 		          if(callback) callback(callbackArg);
 		          onDomChange(selector, callback, callbackArg); // Loop
@@ -70,11 +70,11 @@
 		$(selector).each(function(){
 			$('ol li', this).each(function(){
 				var rel = $(this).attr('rel');
-				console.log('rel= '+rel);
+				//console.log('rel= '+rel);
 				var option = $(this).find('[rel="'+rel+'"]');
-				console.log('option= '+option);
+				//console.log('option= '+option);
 				var id = option.val();
-				console.log('id= '+id);
+				//console.log('id= '+id);
 				$(this).find('span.itemLabel').wrapInner(" <a class='pw-modal pw-modal-large' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='"+config.urls.admin+"page/edit/?id="+id+"&modal=1' target='_blank'></a>").addClass('asmListItemEdit');
 				
 				if($(this).find('.fa-edit').length == 0) {
