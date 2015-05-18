@@ -12,7 +12,7 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 
 		return array(
 			'title' => 'Page Field Edit Links', 
-			'version' => 2.0, 
+			'version' => 2.0.0, 
 			'summary' => 'Creates edit links on Page fields. Compatible with Select, AsmSelect, PageListSelect, PageListSelectMultiple, and PageAutoComplete',
 			'href' => 'http://processwire.com',
 			'singular' => true, 
