@@ -4,6 +4,7 @@
 
 .InputfieldPageEditButton {
 	margin-left: 1em;
+	white-space: nowrap;
 }
 
 .InputfieldPageListSelect .InputfieldPageEditButton {
