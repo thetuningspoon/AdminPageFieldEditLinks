@@ -2,11 +2,7 @@
 	text-decoration: underline;
 }
 
-.InputfieldPageEditButton {
-	margin-left: 1em;
-	white-space: nowrap;
-}
-
-.InputfieldPageListSelect .InputfieldPageEditButton {
-	margin-left: 0;
+.InputfieldPageEditButton, .InputfieldPageNewButton {
+	display: inline-block;
+	margin: 4px;
 }

@@ -3,6 +3,8 @@
  * 
  * Adds edit links to Page fields which use AsmSelect, Select, PageListSelect, PageListSelectMultiple, or PageAutoComplete
  *
+ * @todo: Auto-populate new pages into the list when they're created
+ *
  * authors: thetuningspoon, macrura
  */
  
@@ -12,7 +14,7 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 
 		return array(
 			'title' => 'Page Field Edit Links', 
-			'version' => '2.0.2', 
+			'version' => '2.1.0', 
 			'summary' => 'Creates edit links on Page fields. Compatible with Select, AsmSelect, PageListSelect, PageListSelectMultiple, and PageAutoComplete',
 			'href' => 'http://processwire.com',
 			'singular' => true, 
@@ -30,54 +32,101 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 	 *
 	 */
 	public function init() {
-		
-		$this->addHookProperty("InputfieldPage::editable", $this, "hookAddEditableProperty");
-		$this->addHookBefore("InputfieldAsmSelect::render", $this, "hookAsmSetup");
-		$this->addHookAfter("InputfieldPage::getConfigInputfields", $this, "hookAddConfigOption");
-		$this->addHookBefore('InputfieldPage::render', $this, 'hookLoadAssets');
-	}
 	
-	public function hookAddEditableProperty(HookEvent $event) {
-	     $event->return = 0;
-	}
-
-	// attach js+css to the page only on edit page
-	public function hookLoadAssets(HookEvent $event) {
+		//require_once(wire('config')->urls->modules . 'Inputfield/InputfieldAsmSelect/InputfieldAsmSelect.module');
 		
-		if($event->object->editable && $this->process == 'ProcessPageEdit') {
-			$this->modules->get('JqueryUI')->use('modal');
-
-			// load module scripts and styles for the list links
-			$this->config->scripts->add($this->config->urls->AdminPageFieldEditLinks . "AdminPageFieldEditLinks.js");
-			$this->config->styles->add($this->config->urls->AdminPageFieldEditLinks . "AdminPageFieldEditLinks.css");
-			
-			// Add a CSS class (InputfieldPage-editable) so we can hook it with javascript
-			$event->object->addClass('InputfieldPage-editable');
-		}
+		/**
+		 * Adds edit links to AsmSelects using ProcessWire's native php capabilities. Since this doesn't let us tweak the links in real-time (requires a page reload), we're overriding this with Javascript anyway.
+		 *
+		 */
+		/*$this->addHookBefore("InputfieldAsmSelect::render", function($event) {
+			if($event->object->editLinks && $event->object->process == 'ProcessPageEdit') {
+					$field = $event->object;
+					// make selected options editable via modal
+					$field->setAsmSelectOption('editLink', $event->object->config->urls->admin . 'page/edit/?id={value}&modal=1');
+				}
+		});*/
 		
-	}
+		/**
+		 * Adds additional options to the InputfieldPage edit screen.
+		 *
+		 */
+		$this->addHookAfter("InputfieldPage::getConfigInputfields", function($event) {
+			if($event->object->hasFieldtype !== false) { 
+				$field = wire('modules')->get('InputfieldCheckbox');
+				$field->attr('name', 'editLinks'); 
+				$field->attr('value', 1); 
+				$field->label = $event->object->_('Enable view/edit link(s)?');
+				$field->description = $event->object->_('If checked, pages selected with this field may be viewed and edited in a modal window.');
+				
+				if($event->object->editLinks) $field->attr('checked', 'checked'); 
 	
-	public function hookAddConfigOption(HookEvent $event) {
-		if($event->object->hasFieldtype !== false) { 
-			$field = $this->modules->get('InputfieldCheckbox');
-			$field->attr('name', 'editable'); 
-			$field->attr('value', 1); 
-			$field->label = $this->_('Use page edit link(s)?');
-			$field->description = $this->_('If checked, pages selected with this field may be edited in a modal window.');
-			
-			if($event->object->editable) $field->attr('checked', 'checked'); 
-
-			$event->return->append($field);
-		}
-	}
+				$event->return->append($field);
+				
+				
+				$field = wire('modules')->get('InputfieldCheckbox');
+				$field->attr('name', 'newPageLink'); 
+				$field->attr('value', 1); 
+				$field->label = $event->object->_('Enable "+ New" link?');
+				$field->description = $event->object->_('This will add a "+ New" link to the field to enable creation of new pages in a modal window.');
+				$field->notes = $event->object->_('This is different from the "Allow new pages to be created from field" option above. Instead of requiring a save, new pages will be created immediately and be made available for editing in a modal window.');
+				
+				if($event->object->newPageLink) $field->attr('checked', 'checked'); 
 	
-	public function hookAsmSetup(HookEvent $event) {
-	 	if($event->object->editable && $this->process == 'ProcessPageEdit') {
-	 		$field = $event->object;
-	 		// make selected options editable via modal
-	 		$field->setAsmSelectOption('editLink', $this->config->urls->admin . 'page/edit/?id={value}&modal=1');
-	 	}
-
-	}
+				$event->return->append($field);
+				
+				
+				$field = $event->object->modules->get('InputfieldPageListSelect');
+				$field->setAttribute('name', 'newPageParent'); 
+				$field->label = $event->object->_('Parent for new pages');
+				$field->attr('value', (int) $event->object->newPageParent); 
+				$field->description = $event->object->_('Select the parent to use when adding new pages (if you want to limit to a single parent).');
+				$field->notes = $event->object->_('This is optional. If "Parent of selectable page(s)" is set above, the field will use that page as the parent for new pages. If only a template is specified, the new page will behave like ProcessWire\'s native "Add New" button.');
+				$field->required = false;
+				$field->showIf = "newPageLink=1";
+				$event->return->append($field);
+				
+			}
+		});
 		
+		/**
+		 * Attaches additional JS & CSS files when editing a page that uses this field/module
+		 *
+		 */
+		$this->addHookBefore('InputfieldPage::render', function($event) {
+			if($event->object->process == 'ProcessPageEdit' && $event->object->editLinks) {
+				wire('modules')->get('JqueryUI')->use('modal');
+	
+				// load module scripts and styles for the list links
+				$event->object->config->scripts->add($event->object->config->urls->AdminPageFieldEditLinks . "AdminPageFieldEditLinks.js?v=2");
+				$event->object->config->styles->add($event->object->config->urls->AdminPageFieldEditLinks . "AdminPageFieldEditLinks.css?v=2");
+			}
+		});
+		
+		/**
+		 * Adds html classes and data attributes to the markup for our javascript and CSS
+		 *
+		 */
+		$this->addHookAfter('InputfieldPage::render', function($event) {
+			if($event->object->process == 'ProcessPageEdit') {
+				
+				$out = $event->return; // Get the final output from the render method
+				$htmlClasses = '';
+				$htmlDataAttributes = '';
+				
+				if($event->object->editLinks) $htmlClasses .= "InputfieldPage-editLinks";
+				if($event->object->newPageLink) {
+					$newPageParent = $event->object->newPageParent ?: $event->object->parent_id;
+					$htmlClasses .= " InputfieldPage-newPageLink";
+					$htmlDataAttributes .= "data-parent='$newPageParent' data-template='{$event->object->template_id}'";
+				}
+				
+				// Add to the inputfield's html classes by searching for the "<div class='" string and replacing/adding to it. We tried doing this by adding to $event->object->classesAdded using the addClass() method, but some of the delegated Inputfield types do not make use of these classes, so they didn't always get output.
+				$out = str_replace("<div class='", "<div $htmlDataAttributes class='$htmlClasses ", $out);
+				
+				$event->return = $out;
+			}
+		});
+		
+	}			
 }
