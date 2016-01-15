@@ -245,7 +245,7 @@ function AdminPageFieldEditLinks() {
 			var id = input.val();
 
 			if (id > 1) {
-				input.after(" <span class='InputfieldPageEditButton'><a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + config.urls.admin + "page/edit/?id=" + id + "&modal=1' target='_blank'><i class='fa fa-search'></i> View</a></span> ");
+				input.after(" <span class='InputfieldPageEditButton'><a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + config.urls.admin + "page/edit/?id=" + id + "&modal=1' target='_blank'><i class='fa fa-search'></i> " + config.AdminPageFieldEditLinks.editPageLabel + "</a></span> ");
 			}
 		});
 	}
@@ -260,7 +260,7 @@ function AdminPageFieldEditLinks() {
 			var id = $(this).find('select option:selected').val();
 
 			if (id > 1) {
-				selectBox.after(" <span class='InputfieldPageEditButton'><a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + config.urls.admin + "page/edit/?id=" + id + "&modal=1' target='_blank'><i class='fa fa-search'></i> View</a></span> ");
+				selectBox.after(" <span class='InputfieldPageEditButton'><a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + config.urls.admin + "page/edit/?id=" + id + "&modal=1' target='_blank'><i class='fa fa-search'></i> " + config.AdminPageFieldEditLinks.editPageLabel + "</a></span> ");
 			}
 		});
 	}
