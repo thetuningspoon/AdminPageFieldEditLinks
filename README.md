@@ -13,6 +13,6 @@ Removes the limitations of the previous releases!
 
 * The "View" and "+ New" strings are now translatable
 
-* The add new page links may be enabled independant of the view/edit links 
+* The add new page links may be enabled independent of the view/edit links 
 
 * Code performance improvements
