@@ -96,8 +96,8 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 				wire('modules')->get('JqueryUI')->use('modal');
 
 				// load module scripts and styles for the list links
-				$that->config->scripts->add($that->config->urls->AdminPageFieldEditLinks . "AdminPageFieldEditLinks.js?v=2");
-				$that->config->styles->add($that->config->urls->AdminPageFieldEditLinks . "AdminPageFieldEditLinks.css?v=2");
+				$that->config->scripts->add($that->config->urls->AdminPageFieldEditLinks . "AdminPageFieldEditLinks.js?v=3");
+				$that->config->styles->add($that->config->urls->AdminPageFieldEditLinks . "AdminPageFieldEditLinks.css?v=3");
 
 				// Pass translatable strings to $config->js
 				$that->config->js('AdminPageFieldEditLinks', array(
