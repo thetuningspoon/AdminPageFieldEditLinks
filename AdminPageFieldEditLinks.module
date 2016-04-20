@@ -7,6 +7,8 @@
 
 class AdminPageFieldEditLinks extends WireData implements Module {
 
+	private $processes = array('ProcessPageEdit', 'ProcessUser');
+
 	public static function getModuleInfo() {
 
 		return array(
@@ -92,7 +94,7 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 		$this->addHookBefore('InputfieldPage::render', function($event) {
 			$that = $event->object;
 
-			if($that->process == 'ProcessPageEdit' && ($that->editLinks || $that->newPageLink)) { // Only load additional assets if editLinks or newPageLinks are enabled for this field
+			if(in_array($that->process, $this->processes) && ($that->editLinks || $that->newPageLink)) { // Only load additional assets if editLinks or newPageLinks are enabled for this field
 				wire('modules')->get('JqueryUI')->use('modal');
 
 				// load module scripts and styles for the list links
@@ -114,7 +116,7 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 		$this->addHookAfter('InputfieldPage::render', function($event) {
 			$that = $event->object;
 
-			if($that->process == 'ProcessPageEdit') {
+			if(in_array($that->process, $this->processes)) {
 
 				$out = $event->return; // Get the final output from the render method
 				$htmlClasses = '';
