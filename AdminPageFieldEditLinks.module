@@ -13,7 +13,7 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 
 		return array(
 			'title' => 'Page Field Edit Links',
-			'version' => '3.0.1',
+			'version' => '3.1.0',
 			'summary' => 'Creates edit links on Page fields so that pages can be added or edited in a modal window without leaving the edit screen',
 			'author' => 'Mike Spooner (thetuningspoon), macrura',
 			'href' => 'http://processwire.com',
@@ -98,7 +98,7 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 				wire('modules')->get('JqueryUI')->use('modal');
 
 				// load module scripts and styles for the list links
-				$that->config->scripts->add($that->config->urls->AdminPageFieldEditLinks . "AdminPageFieldEditLinks.js?v=3");
+				$that->config->scripts->add($that->config->urls->AdminPageFieldEditLinks . "AdminPageFieldEditLinks.js?v=4");
 				$that->config->styles->add($that->config->urls->AdminPageFieldEditLinks . "AdminPageFieldEditLinks.css?v=3");
 
 				// Pass translatable strings to $config->js
