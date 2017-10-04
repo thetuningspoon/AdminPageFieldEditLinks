@@ -21,6 +21,10 @@ function AdminPageFieldEditLinks() {
 	});
 
 	initEditLinks($('.Inputfields')); // Initialize all of the fields with edit links on the page
+	// Make it compatible with ajax injected fields
+	$(document).on('reloaded', '.InputfieldPage', function() {
+		initEditLinks($('.Inputfields'));
+	});
 
 	/**
 	 * Given a jQuery object, adds edit and new links and attaches event handlers for each the page field element(s) it contains that have those features enabled
