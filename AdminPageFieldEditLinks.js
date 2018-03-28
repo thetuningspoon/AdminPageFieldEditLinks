@@ -1,8 +1,6 @@
 /**
  * Adds edit links to Page fields so that pages can be added or edited in a modal window without leaving the edit screen
  *
- * @todo: Refactor to consolidate some of the initialization/reload code, switch to object literal style
- *
  * authors: Mike Spooner (thetuningspoon), macrura
  */
 

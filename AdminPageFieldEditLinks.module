@@ -7,18 +7,16 @@
 
 class AdminPageFieldEditLinks extends WireData implements Module {
 
-	private $processes = array('ProcessPageEdit', 'ProcessUser');
-
 	public static function getModuleInfo() {
 
 		return array(
 			'title' => 'Page Field Edit Links',
-			'version' => '3.1.0',
+			'version' => '3.1.1',
 			'summary' => 'Creates edit links on Page fields so that pages can be added or edited in a modal window without leaving the edit screen',
 			'author' => 'Mike Spooner (thetuningspoon), macrura',
 			'href' => 'http://processwire.com',
 			'singular' => true,
-			'autoload' => 'template=admin',
+			'autoload' => true,
 			'icon' => 'edit',
 			'requires' => array('FieldtypePage'),
 		);
@@ -41,6 +39,19 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 			$label = $p->$labelField;
 			if($label == '') $label = $p->name;
 			echo json_encode($label); exit;
+		}
+
+		/**
+		 * Configure some values based on the current PW version
+		 *
+		 * PW Version 3.0.44 and above have a renderReadyHook() method, giving us better support for repeaters
+		 *
+		 */
+		if(version_compare($this->wire('config')->version, '3.0.44', '>=')) { // PW >= 3.0.44
+			$this->beforeHookMethod = 'renderReadyHook';
+		}
+		else { // PW < 3.0.44
+			$this->beforeHookMethod = 'render';
 		}
 
 		/**
@@ -73,7 +84,6 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 
 				$event->return->append($field);
 
-
 				$field = $that->modules->get('InputfieldPageListSelect');
 				$field->setAttribute('name', 'newPageParent');
 				$field->label = __('Parent for new pages created');
@@ -91,10 +101,10 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 		 * Attaches additional JS & CSS files when editing a page that uses this field/module and passes translatable strings to $config->js
 		 *
 		 */
-		$this->addHookBefore('InputfieldPage::render', function($event) {
+		$this->addHookBefore("InputfieldPage::{$this->beforeHookMethod}", function($event) {
 			$that = $event->object;
 
-			if(in_array($that->process, $this->processes) && ($that->editLinks || $that->newPageLink)) { // Only load additional assets if editLinks or newPageLinks are enabled for this field
+			if($that->editLinks || $that->newPageLink) { // Only load additional assets if editLinks or newPageLinks are enabled for this field
 				wire('modules')->get('JqueryUI')->use('modal');
 
 				// load module scripts and styles for the list links
@@ -116,8 +126,6 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 		$this->addHookAfter('InputfieldPage::render', function($event) {
 			$that = $event->object;
 
-			if(in_array($that->process, $this->processes)) {
-
 				$out = $event->return; // Get the final output from the render method
 				$htmlClasses = '';
 				$htmlDataAttributes = '';
@@ -133,7 +141,6 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 				$out = str_replace("<div class='", "<div $htmlDataAttributes class='$htmlClasses ", $out);
 
 				$event->return = $out;
-			}
 		});
 
 	}
