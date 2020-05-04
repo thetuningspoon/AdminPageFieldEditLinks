@@ -143,5 +143,25 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 				$event->return = $out;
 		});
 
+		/**
+		 * Adds html classes and data attributes to the markup for our javascript and CSS in case the inputfield only renders its value (i.e. it’s locked)
+		 *
+		 */
+		$this->addHookAfter('InputfieldPage::renderValue', function($event) {
+			$that = $event->object;
+
+			if($that->editLinks) {
+                $htmlClasses .= "InputfieldPage-editLinks";
+                $htmlDataAttributes .= "data-pageid='{$that->hasPage->get($that->hasField)->id}'";
+            }
+			if($that->newPageLink) {
+				$newPageParent = $that->newPageParent ?: $that->parent_id;
+				$htmlClasses .= " InputfieldPage-newPageLink";
+				$htmlDataAttributes .= " data-parent='{$newPageParent}' data-template='{$that->template_id}'";
+			}
+            
+            $event->return = "<span {$htmlDataAttributes} class='$htmlClasses'>{$event->return}</span>";
+		});
+
 	}
 }

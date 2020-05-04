@@ -185,6 +185,24 @@ function AdminPageFieldEditLinks() {
 			});
 		}, 100);
 
+
+		// Init links for value-only fields (locked fields)
+		$wrapper.find('span.InputfieldPage-editLinks').each(function () {
+			var $this = $(this);
+
+			addEditLinkToValueOnly($this);
+			// Call function again for this select whenever there is a change to it
+			$this.off('change').on('change', function () {
+				addEditLinkToValueOnly($this);
+			});
+		});
+		$wrapper.find('span.InputfieldPage-newPageLink').each(function() {
+			// Reload the field when a new page is created and the modal is closed
+			$(this).closest('.InputfieldPage').off('newPageCompleted').on('newPageCompleted', function(event) {
+				addNewLink($(this));
+			});
+		});
+
 	}
 
 
@@ -280,6 +298,18 @@ function AdminPageFieldEditLinks() {
 					$(this).find('span.asmListItemLabel a').append("<i class='fa fa-search' style='margin-left:.5em;'></i>");
 				}
 			});
+		});
+	}
+    
+	function addEditLinkToValueOnly($field) {
+		$field.each(function () {
+			$('.InputfieldPageEditButton', this).remove(); // Remove edit button if it already exists
+            
+			var id = $(this).data('pageid');
+
+			if (id > 1) {
+				$(this).after(" <span class='InputfieldPageEditButton'><a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + config.urls.admin + "page/edit/?id=" + id + "' target='_blank'><i class='fa fa-search'></i> " + config.AdminPageFieldEditLinks.editPageLabel + "</a></span> ");
+			}
 		});
 	}
 
