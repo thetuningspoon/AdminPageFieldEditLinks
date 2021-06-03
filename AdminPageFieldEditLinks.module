@@ -77,7 +77,7 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 			if($that->newPageLink) {
 				$event->return->addable->setAttribute('checked',false);
 				$event->return->addable->setAttribute('disabled',true);
-				$event->return->addable->notes = __('DISABLED: Not compatible with AdminPageFieldEditLinks');
+				$event->return->addable->notes = sprintf(__('DISABLED: Not compatible with module %s if link to create new pages is enabled!'), '**AdminPageFieldEditLinks**');
 			}
 			// $event->return->remove('addable');
 
