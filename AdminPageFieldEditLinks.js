@@ -31,7 +31,7 @@ function AdminPageFieldEditLinks() {
 	 */
 	function initEditLinks($wrapper) {
 		// Find all of the InputfieldPage fields that have "add new" links enabled and add links to them (Same for all inputfields)
-		$wrapper.find('.InputfieldPage-newPageLink').each(function () {
+		$wrapper.find('.InputfieldContent > .InputfieldPage-newPageLink').each(function () {
 			addNewLink($(this));
 		});
 
@@ -205,9 +205,12 @@ function AdminPageFieldEditLinks() {
 
 	}
 
-
-
-
+	function getEditUrl($pageField, $id) {
+		var fieldName = $pageField.parents('li.InputfieldPage').children('label').attr('for').split('_')[1];
+		var forPageId = $pageField.parents('form').attr('action').split('=')[1];
+		
+		return config.urls.admin + "page/edit/?id=" + $id + "&forpage=" + forPageId + "&forfield=" + fieldName;		
+	}
 
 	function addEditLinksToBarLists($field) {
 
@@ -216,7 +219,7 @@ function AdminPageFieldEditLinks() {
 			$('ol li', $(this)).not('.itemTemplate').each(function () {
 				var $this = $(this);
 				var id = $this.find('span.itemValue').text();
-				$this.find('span.itemLabel').wrapInner(" <a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + config.urls.admin + "page/edit/?id=" + id + "' target='_blank'></a>").addClass('asmListItemEdit');
+				$this.find('span.itemLabel').wrapInner(" <a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + getEditUrl($(this), id) + "' target='_blank'></a>").addClass('asmListItemEdit');
 
 				if ($this.find('.fa-search').length == 0) {
 					$this.find('span.itemLabel a').append("<i class='fa fa-search' style='margin-left:.5em;'></i>");
@@ -235,7 +238,7 @@ function AdminPageFieldEditLinks() {
 				var id = $this.find('input').val();
 
 				if($this.find('.fa-search').length == 0) {
-					$this.find('span').append("<a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + config.urls.admin + "page/edit/?id=" + id + "' target='_blank'><i class='fa fa-search' style='margin-left:.5em;'></i></a>");
+					$this.find('span').append("<a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + getEditUrl($(this), id) + "' target='_blank'><i class='fa fa-search' style='margin-left:.5em;'></i></a>");
 				}
 			});
 
@@ -252,7 +255,7 @@ function AdminPageFieldEditLinks() {
 			var id = $(this).find('.InputfieldPageAutocompleteData').val();
 
 			if (id > 1) {
-				selectBox.parent().after(" <span class='InputfieldPageEditButton'><a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + config.urls.admin + "page/edit/?id=" + id + "' target='_blank'><i class='fa fa-search'></i> " + config.AdminPageFieldEditLinks.editPageLabel + "</a></span> ");
+				selectBox.parent().after(" <span class='InputfieldPageEditButton'><a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + getEditUrl($(this), id) + "' target='_blank'><i class='fa fa-search'></i> " + config.AdminPageFieldEditLinks.editPageLabel + "</a></span> ");
 			}
 		});
 	}
@@ -265,7 +268,7 @@ function AdminPageFieldEditLinks() {
 			var id = input.val();
 
 			if (id > 1) {
-				input.after(" <span class='InputfieldPageEditButton'><a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + config.urls.admin + "page/edit/?id=" + id + "' target='_blank'><i class='fa fa-search'></i> " + config.AdminPageFieldEditLinks.editPageLabel + "</a></span> ");
+				input.after(" <span class='InputfieldPageEditButton'><a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + getEditUrl($(this), id) + "' target='_blank'><i class='fa fa-search'></i> " + config.AdminPageFieldEditLinks.editPageLabel + "</a></span> ");
 			}
 		});
 	}
@@ -280,7 +283,7 @@ function AdminPageFieldEditLinks() {
 			var id = $(this).find('select option:selected').val();
 
 			if (id > 1) {
-				selectBox.after(" <span class='InputfieldPageEditButton'><a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + config.urls.admin + "page/edit/?id=" + id + "' target='_blank'><i class='fa fa-search'></i> " + config.AdminPageFieldEditLinks.editPageLabel + "</a></span> ");
+				selectBox.after(" <span class='InputfieldPageEditButton'><a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + getEditUrl($(this), id) + "' target='_blank'><i class='fa fa-search'></i> " + config.AdminPageFieldEditLinks.editPageLabel + "</a></span> ");
 			}
 		});
 	}
@@ -288,11 +291,14 @@ function AdminPageFieldEditLinks() {
 	function addEditLinksToAsmSelect($field) {
 		$field.each(function () {
 			var pageField = $(this);
+			var fieldName = pageField.parents('li.InputfieldPage').children('label').attr('for').split('_')[1];
+			var forPageId = pageField.parents('form').attr('action').split('=')[1];
+			
 			$('.asmListItem', this).each(function () {
 				var rel = $(this).attr('rel');
 				var option = pageField.find('.asmSelect [rel="' + rel + '"]').first();
 				var id = option.val();
-				$(this).find('span.asmListItemLabel').wrapInner(" <a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + config.urls.admin + "page/edit/?id=" + id + "' target='_blank'></a>").addClass('asmListItemEdit');
+				$(this).find('span.asmListItemLabel').wrapInner(" <a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + getEditUrl(pageField, id) + "' target='_blank'></a>").addClass('asmListItemEdit');
 
 				if ($(this).find('.fa-search').length == 0) {
 					$(this).find('span.asmListItemLabel a').append("<i class='fa fa-search' style='margin-left:.5em;'></i>");
@@ -308,7 +314,7 @@ function AdminPageFieldEditLinks() {
 			var id = $(this).data('pageid');
 
 			if (id > 1) {
-				$(this).after(" <span class='InputfieldPageEditButton'><a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + config.urls.admin + "page/edit/?id=" + id + "' target='_blank'><i class='fa fa-search'></i> " + config.AdminPageFieldEditLinks.editPageLabel + "</a></span> ");
+				$(this).after(" <span class='InputfieldPageEditButton'><a class='pw-modal pw-modal-medium' data-buttons='#submit_save, #submit_publish, #submit_save_unpublished' data-autoclose href='" + getEditUrl($(this), id) + "' target='_blank'><i class='fa fa-search'></i> " + config.AdminPageFieldEditLinks.editPageLabel + "</a></span> ");
 			}
 		});
 	}
@@ -507,6 +513,7 @@ function AdminPageFieldEditLinks() {
 	function addNewLink($field) {
 		$field.each(function () {
 			$('.InputfieldPageNewButton', this).remove(); // If the button already exists, remove it
+			$('.InputfieldPageAddButton', this).remove(); // If the button already exists, remove it
 			var parentId = $(this).attr('data-parent');
 			var templateId = $(this).attr('data-template');
 
