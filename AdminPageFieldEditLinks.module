@@ -2,7 +2,7 @@
 /**
  * Adds edit links to Page fields so that pages can be added or edited in a modal window without leaving the edit screen
  *
- * authors: Mike Spooner (thetuningspoon), macrura
+ * authors: Mike Spooner (thetuningspoon), macrura, kixe
 */
 
 class AdminPageFieldEditLinks extends WireData implements Module {
@@ -11,7 +11,7 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 
 		return array(
 			'title' => 'Page Field Edit Links',
-			'version' => '3.1.3',
+			'version' => '3.1.4',
 			'summary' => 'Creates edit links on Page fields so that pages can be added or edited in a modal window without leaving the edit screen',
 			'author' => 'Mike Spooner (thetuningspoon), macrura',
 			'href' => 'http://processwire.com',
@@ -55,11 +55,31 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 		}
 
 		/**
+		 * Remove default 'create new' link if 'add' link is provided
+		 *
+		 */
+		$this->addHookBefore("InputfieldPage::renderAddable", function($event) {
+			$that = $event->object;
+			if($that->newPageLink) {
+				$event->replace = true;
+				$event->return = '';
+			}
+		});
+
+		/**
 		 * Adds additional options to the InputfieldPage edit screen.
 		 *
 		 */
 		$this->addHookAfter("InputfieldPage::getConfigInputfields", function($event) {
 			$that = $event->object;
+
+			// disable option to provide 'create new' link if 'add' link is already there
+			if($that->newPageLink) {
+				$event->return->addable->setAttribute('checked',false);
+				$event->return->addable->setAttribute('disabled',true);
+				$event->return->addable->notes = sprintf(__('DISABLED: Not compatible with module %s if link to create new pages is enabled!'), '**AdminPageFieldEditLinks**');
+			}
+			// $event->return->remove('addable');
 
 			if($that->hasFieldtype !== false) {
 				$field = wire('modules')->get('InputfieldCheckbox');
