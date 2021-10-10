@@ -37,7 +37,7 @@ function AdminPageFieldEditLinks() {
 
 
 		// Init links for InputfieldSelect
-		$wrapper.find('div.InputfieldSelect.InputfieldPage-editLinks').each(function () {
+		$wrapper.find('div.InputfieldSelect.InputfieldPage-editLinks, div.InputfieldChosenSelect.InputfieldPage-newPageLink').each(function () {
 			var $this = $(this);
 
 			addEditLinkToSelect($this);
@@ -46,7 +46,7 @@ function AdminPageFieldEditLinks() {
 				addEditLinkToSelect($this);
 			});
 		});
-		$wrapper.find('div.InputfieldSelect.InputfieldPage-newPageLink').each(function() {
+		$wrapper.find('div.InputfieldSelect.InputfieldPage-newPageLink, div.InputfieldChosenSelectMultiple.InputfieldPage-newPageLink').each(function() {
 			// Reload the field when a new page is created and the modal is closed
 			$(this).closest('.InputfieldPage').off('newPageCompleted').on('newPageCompleted', function(event) {
 				addNewPageToSelect($(this));
