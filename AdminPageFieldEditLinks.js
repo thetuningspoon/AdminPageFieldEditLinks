@@ -206,7 +206,7 @@ function AdminPageFieldEditLinks() {
 	}
 
 	function getEditUrl($pageField, $id) {
-		var fieldName = $pageField.parents('li.InputfieldPage').children('label').attr('for').split('_')[1];
+		var fieldName = $pageField.parents('li.InputfieldPage').children('label').attr('for').replace(/^Inputfield_/, '');
 		var forPageId = $pageField.parents('form').attr('action').split('=')[1];
 		
 		return config.urls.admin + "page/edit/?id=" + $id + "&forpage=" + forPageId + "&forfield=" + fieldName;		
