@@ -175,14 +175,14 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 
 			if($that->editLinks) {
                 $htmlClasses .= "InputfieldPage-editLinks";
-                $htmlDataAttributes .= "data-pageid='{$that->hasPage->get($that->hasField)->id}'";
+                $htmlDataAttributes .= "data-pageid='{$that->hasPage->get($that->hasField->name)->id}'";
             }
 			if($that->newPageLink) {
 				$newPageParent = $that->newPageParent ?: $that->parent_id;
 				$htmlClasses .= " InputfieldPage-newPageLink";
 				$htmlDataAttributes .= " data-parent='{$newPageParent}' data-template='{$that->template_id}'";
 			}
-            
+
             $event->return = "<span {$htmlDataAttributes} class='$htmlClasses'>{$event->return}</span>";
 		});
 
