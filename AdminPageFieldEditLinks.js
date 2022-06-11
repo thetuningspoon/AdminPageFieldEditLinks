@@ -37,7 +37,7 @@ function AdminPageFieldEditLinks() {
 
 
 		// Init links for InputfieldSelect
-		$wrapper.find('div.InputfieldSelect.InputfieldPage-editLinks, div.InputfieldChosenSelect.InputfieldPage-newPageLink').each(function () {
+		$wrapper.find('div.InputfieldSelect.InputfieldPage-editLinks, div.InputfieldChosenSelect.InputfieldPage-editLinks').each(function () {
 			var $this = $(this);
 
 			addEditLinkToSelect($this);
@@ -46,7 +46,7 @@ function AdminPageFieldEditLinks() {
 				addEditLinkToSelect($this);
 			});
 		});
-		$wrapper.find('div.InputfieldSelect.InputfieldPage-newPageLink, div.InputfieldChosenSelectMultiple.InputfieldPage-newPageLink').each(function() {
+		$wrapper.find('div.InputfieldSelect.InputfieldPage-newPageLink, div.InputfieldChosenSelect.InputfieldPage-newPageLink').each(function() {
 			// Reload the field when a new page is created and the modal is closed
 			$(this).closest('.InputfieldPage').off('newPageCompleted').on('newPageCompleted', function(event) {
 				addNewPageToSelect($(this));
@@ -55,7 +55,7 @@ function AdminPageFieldEditLinks() {
 
 
 		// Init for InputfieldSelectMultiple
-		$wrapper.find('div.InputfieldSelectMultiple.InputfieldPage-newPageLink').each(function() {
+		$wrapper.find('div.InputfieldSelectMultiple.InputfieldPage-newPageLink, div.InputfieldChosenSelectMultiple.InputfieldPage-newPageLink').each(function() {
 			// Reload the field when a new page is created and the modal is closed
 			$(this).closest('.InputfieldPage').off('newPageCompleted').on('newPageCompleted', function(event) {
 				addNewPageToSelectMultiple($(this));
@@ -185,7 +185,6 @@ function AdminPageFieldEditLinks() {
 			});
 		}, 100);
 
-
 		// Init links for value-only fields (locked fields)
 		$wrapper.find('span.InputfieldPage-editLinks').each(function () {
 			var $this = $(this);
@@ -306,11 +305,11 @@ function AdminPageFieldEditLinks() {
 			});
 		});
 	}
-    
+
 	function addEditLinkToValueOnly($field) {
 		$field.each(function () {
 			$('.InputfieldPageEditButton', this).remove(); // Remove edit button if it already exists
-            
+			
 			var id = $(this).data('pageid');
 
 			if (id > 1) {

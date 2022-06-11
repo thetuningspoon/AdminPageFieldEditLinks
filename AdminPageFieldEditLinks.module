@@ -11,7 +11,7 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 
 		return array(
 			'title' => 'Page Field Edit Links',
-			'version' => '3.1.4',
+			'version' => '3.1.5',
 			'summary' => 'Creates edit links on Page fields so that pages can be added or edited in a modal window without leaving the edit screen',
 			'author' => 'Mike Spooner (thetuningspoon), macrura',
 			'href' => 'http://processwire.com',
@@ -174,16 +174,16 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 			$htmlDataAttributes = '';
 
 			if($that->editLinks) {
-                $htmlClasses .= "InputfieldPage-editLinks";
-                $htmlDataAttributes .= "data-pageid='{$that->hasPage->get($that->hasField->name)->id}'";
-            }
+				$htmlClasses .= "InputfieldPage-editLinks";
+				$htmlDataAttributes .= "data-pageid='{$that->hasPage->get($that->hasField->name)->id}'";
+			}
 			if($that->newPageLink) {
 				$newPageParent = $that->newPageParent ?: $that->parent_id;
 				$htmlClasses .= " InputfieldPage-newPageLink";
 				$htmlDataAttributes .= " data-parent='{$newPageParent}' data-template='{$that->template_id}'";
 			}
 
-            $event->return = "<span {$htmlDataAttributes} class='$htmlClasses'>{$event->return}</span>";
+			$event->return = "<span {$htmlDataAttributes} class='$htmlClasses'>{$event->return}</span>";
 		});
 
 	}
