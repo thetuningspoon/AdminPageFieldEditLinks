@@ -185,6 +185,7 @@ function AdminPageFieldEditLinks() {
 			});
 		}, 100);
 
+
 		// Init links for value-only fields (locked fields)
 		$wrapper.find('span.InputfieldPage-editLinks').each(function () {
 			var $this = $(this);
@@ -309,7 +310,7 @@ function AdminPageFieldEditLinks() {
 	function addEditLinkToValueOnly($field) {
 		$field.each(function () {
 			$('.InputfieldPageEditButton', this).remove(); // Remove edit button if it already exists
-			
+
 			var id = $(this).data('pageid');
 
 			if (id > 1) {
