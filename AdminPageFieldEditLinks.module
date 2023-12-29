@@ -11,7 +11,7 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 
 		return array(
 			'title' => 'Page Field Edit Links',
-			'version' => '3.1.5',
+			'version' => '3.1.6',
 			'summary' => 'Creates edit links on Page fields so that pages can be added or edited in a modal window without leaving the edit screen',
 			'author' => 'Mike Spooner (thetuningspoon), macrura',
 			'href' => 'http://processwire.com',
@@ -72,49 +72,46 @@ class AdminPageFieldEditLinks extends WireData implements Module {
 		 */
 		$this->addHookAfter("InputfieldPage::getConfigInputfields", function($event) {
 			$that = $event->object;
+			if($that->hasFieldtype == false) return; // This prevents changes from being applied when working with the inputfield outside of the context of a fieldtype (e.g. FormBuilder)
 
-			// disable option to provide 'create new' link if 'add' link is already there
+			// Disable option to provide 'create new' link if 'add' link is already there
 			if($that->newPageLink) {
-				$event->return->addable->setAttribute('checked',false);
-				$event->return->addable->setAttribute('disabled',true);
-				$event->return->addable->notes = sprintf(__('DISABLED: Not compatible with module %s if link to create new pages is enabled!'), '**AdminPageFieldEditLinks**');
+				$event->return->addable->setAttribute('checked', false);
+				$event->return->addable->setAttribute('disabled', true);
+				$event->return->addable->notes = sprintf(__('DISABLED: Not compatible with module %s if link to create new pages is enabled.'), '**AdminPageFieldEditLinks**');
 			}
-			// $event->return->remove('addable');
 
-			if($that->hasFieldtype !== false) {
-				$field = wire('modules')->get('InputfieldCheckbox');
-				$field->attr('name', 'editLinks');
-				$field->attr('value', 1);
-				$field->label = __('Enable view/edit links on selected pages?');
-				$field->description = __('If checked, pages selected with this field may be viewed and edited in a modal window.');
+			$field = wire('modules')->get('InputfieldCheckbox');
+			$field->attr('name', 'editLinks');
+			$field->attr('value', 1);
+			$field->label = __('Enable view/edit links on selected pages?');
+			$field->description = __('If checked, pages selected with this field may be viewed and edited in a modal window.');
 
-				if($that->editLinks) $field->attr('checked', 'checked');
+			if($that->editLinks) $field->attr('checked', 'checked');
 
-				$event->return->append($field);
+			$event->return->append($field);
 
 
-				$field = wire('modules')->get('InputfieldCheckbox');
-				$field->attr('name', 'newPageLink');
-				$field->attr('value', 1);
-				$field->label = __('Enable link to create new pages?');
-				$field->description = __('This will add a "+ New" link to the field to enable creation of new pages in a modal window. New pages will be automatically added to the field.');
-				$field->notes = __('This is different from the "Allow new pages to be created from field" option above. Instead of requiring a save, new pages will be created immediately and be made available for editing in a modal window.');
+			$field = wire('modules')->get('InputfieldCheckbox');
+			$field->attr('name', 'newPageLink');
+			$field->attr('value', 1);
+			$field->label = __('Enable link to create new pages?');
+			$field->description = __('This will add a "+ New" link to the field to enable creation of new pages in a modal window. New pages will be automatically added to the field.');
+			$field->notes = __('This is different from the "Allow new pages to be created from field" option above. Instead of requiring a save, new pages will be created immediately and be made available for editing in a modal window.');
 
-				if($that->newPageLink) $field->attr('checked', 'checked');
+			if($that->newPageLink) $field->attr('checked', 'checked');
 
-				$event->return->append($field);
+			$event->return->append($field);
 
-				$field = $that->modules->get('InputfieldPageListSelect');
-				$field->setAttribute('name', 'newPageParent');
-				$field->label = __('Parent for new pages created');
-				$field->attr('value', (int) $that->newPageParent);
-				$field->description = __('Select the parent to use when adding new pages (if you want to limit to a single parent).');
-				$field->notes = __('This is optional. If "Parent of selectable page(s)" is set above, the field will use that page as the parent for new pages. If only a template is specified, the new page will behave like ProcessWire\'s native "Add New" button and allow you to select a parent when creating a new page.');
-				$field->required = false;
-				$field->showIf = "newPageLink=1";
-				$event->return->append($field);
-
-			}
+			$field = $that->modules->get('InputfieldPageListSelect');
+			$field->setAttribute('name', 'newPageParent');
+			$field->label = __('Parent for new pages created');
+			$field->attr('value', (int) $that->newPageParent);
+			$field->description = __('Select the parent to use when adding new pages (if you want to limit to a single parent).');
+			$field->notes = __('This is optional. If "Parent of selectable page(s)" is set above, the field will use that page as the parent for new pages. If only a template is specified, the new page will behave like ProcessWire\'s native "Add New" button and allow you to select a parent when creating a new page.');
+			$field->required = false;
+			$field->showIf = "newPageLink=1";
+			$event->return->append($field);
 		});
 
 		/**
